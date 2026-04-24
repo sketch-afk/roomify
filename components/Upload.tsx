@@ -50,7 +50,7 @@ const Upload = ({ onComplete }: UploadProps) => {
     }
 
     setFile(file);
-    setProgress(0);
+    setProgress(0)
 
     const reader = new FileReader();
     let interval: NodeJS.Timeout | null = null;
