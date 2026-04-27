@@ -108,7 +108,7 @@ const visualizerId = () => {
                     <div className="rendering-card">
                       <RefreshCcw className="spinner" />
                       <span className="title">Rendering...</span>
-                      <span className="subtitle">Generarting your 3D visualization</span>
+                      <span className="subtitle">Generating your 3D visualization</span>
                     </div>
                   </div>
                 )}
