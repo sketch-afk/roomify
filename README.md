@@ -24,6 +24,14 @@ Install the dependencies:
 npm install
 ```
 
+### Environment Variables
+
+Create a `.env.local` file in the root directory and set the following variable:
+
+```bash
+VITE_PUTER_WORKER_URL=your_worker_url_here
+```
+
 ### Development
 
 Start the development server with HMR:
@@ -80,7 +88,8 @@ Make sure to deploy the output of `npm run build`
 
 ## Styling
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting
+experience. You can use whatever CSS framework you prefer.
 
 ---
 
