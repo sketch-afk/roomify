@@ -4,6 +4,10 @@ import { generate3DView } from "../../lib/ai.action";
 import { Box, Download, RefreshCcw, Share2, X } from "lucide-react";
 import Button from "../../components/ui/Button";
 import { createProject, getProjectById } from "../../lib/puter.action";
+import {
+  ReactCompareSlider,
+  ReactCompareSliderImage,
+} from "react-compare-slider";
 
 const visualizerId = () => {
   const { id } = useParams();
@@ -12,14 +16,24 @@ const visualizerId = () => {
 
   const hasInitialGenerated = useRef(false);
 
-  const [project, setProject] = useState<DesignItem | null>(null)
-  const [isProjectLoading, setIsProjectLoading] = useState(true)
-  
+  const [project, setProject] = useState<DesignItem | null>(null);
+  const [isProjectLoading, setIsProjectLoading] = useState(true);
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentImage, setCurrentImage] = useState<string | null>(null);
 
   const handleBack = () => navigate("/");
+
+  const handleExport = () => {
+    if (!currentImage) return;
+
+    const link = document.createElement("a");
+    link.href = currentImage;
+    link.download = `${project?.name ?? `roomify-${id}`}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const runGeneration = async (item: DesignItem) => {
     if (!id || !item.sourceImage) return;
@@ -38,9 +52,12 @@ const visualizerId = () => {
           timestamp: Date.now(),
           ownerId: item.ownerId ?? userId ?? null,
           isPublic: item.isPublic ?? false,
-        }
+        };
 
-        const saved = await createProject({ item: updatedItem, visibility: "private" });
+        const saved = await createProject({
+          item: updatedItem,
+          visibility: "private",
+        });
 
         if (saved) {
           setProject(saved);
@@ -54,7 +71,7 @@ const visualizerId = () => {
     }
   };
 
-    useEffect(() => {
+  useEffect(() => {
     let isMounted = true;
 
     const loadProject = async () => {
@@ -99,7 +116,6 @@ const visualizerId = () => {
     hasInitialGenerated.current = true;
     void runGeneration(project);
   }, [project, isProjectLoading]);
-  
 
   return (
     <div className="visualizer">
@@ -126,43 +142,87 @@ const visualizerId = () => {
             <div className="panel-actions">
               <Button
                 size="sm"
-                onClick={() => {}}
+                onClick={handleExport}
                 className="export"
                 disabled={!currentImage}
               >
                 <Download className="w-4 h-4 mr-2" /> Export
               </Button>
-              <Button
-                size="sm"
-                onClick={() => {}}
-                className="share"
-              >
+              <Button size="sm" onClick={() => {}} className="share">
                 <Share2 className="w-4 h-4 mr-2" /> Share
               </Button>
-
             </div>
           </div>
 
-          <div className={`render-area ${isProcessing ? "is-processing" : ''}`}>
+          <div className={`render-area ${isProcessing ? "is-processing" : ""}`}>
             {currentImage ? (
               <img src={currentImage} alt="AI Render" />
             ) : (
               <div className="render-placeholder">
                 {project?.sourceImage && (
-                  <img src={project?.sourceImage} alt="Original" className="render-fallback" />
+                  <img
+                    src={project?.sourceImage}
+                    alt="Original"
+                    className="render-fallback"
+                  />
                 )}
               </div>
             )}
 
             {isProcessing && (
-                  <div className="render-overlay">
-                    <div className="rendering-card">
-                      <RefreshCcw className="spinner" />
-                      <span className="title">Rendering...</span>
-                      <span className="subtitle">Generating your 3D visualization</span>
-                    </div>
-                  </div>
+              <div className="render-overlay">
+                <div className="rendering-card">
+                  <RefreshCcw className="spinner" />
+                  <span className="title">Rendering...</span>
+                  <span className="subtitle">
+                    Generating your 3D visualization
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="panel compare">
+          <div className="panel-header">
+            <div className="panel-meta">
+              <p>Compare</p>
+              <h3>Before and After</h3>
+            </div>
+            <div className="hint">Drag to compare</div>
+          </div>
+
+          <div className="compare-stage">
+            {project?.sourceImage && currentImage ? (
+              <ReactCompareSlider
+                defaultValue={50}
+                style={{ width: "100%", height: "auto" }}
+                itemOne={
+                  <ReactCompareSliderImage
+                    src={project?.sourceImage}
+                    alt="Before"
+                    className="compare-img"
+                  />
+                }
+                itemTwo={
+                  <ReactCompareSliderImage
+                    src={currentImage || project?.renderedImage}
+                    alt="After"
+                    className="compare-img"
+                  />
+                }
+              />
+            ) : (
+              <div className="compare-fallback">
+                {project?.sourceImage && (
+                  <img
+                    src={project.sourceImage}
+                    alt="Before"
+                    className="compare-img"
+                  />
                 )}
+              </div>
+            )}
           </div>
         </div>
       </section>
