@@ -27,12 +27,13 @@ const visualizerId = () => {
   const handleExport = () => {
     if (!currentImage) return;
 
-    const link = document.createElement("a");
-    link.href = currentImage;
-    link.download = `${project?.name ?? `roomify-${id}`}.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // const link = document.createElement("a");
+    // link.href = currentImage;
+    // link.download = `${project?.name ?? `roomify-${id}`}.png`;
+    // document.body.appendChild(link);
+    // link.click();
+    // document.body.removeChild(link);
+    window.open(currentImage, "_blank", "noopener,noreferrer");
   };
 
   const runGeneration = async (item: DesignItem) => {
