@@ -35,6 +35,22 @@ const visualizerId = () => {
     // document.body.removeChild(link);
     window.open(currentImage, "_blank", "noopener,noreferrer");
   };
+  const handleShare = () => {
+    if (!currentImage) return;
+
+    if (navigator.share) {
+      navigator
+        .share({
+          title: project?.name || "Roomify Design",
+          text: "Check out my architectural visualization on Roomify!",
+          url: window.location.href,
+        })
+        .catch((error) => console.log("Error sharing", error));
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert("Link copied to clipboard!");
+    }
+  };
 
   const runGeneration = async (item: DesignItem) => {
     if (!id || !item.sourceImage) return;
@@ -124,7 +140,7 @@ const visualizerId = () => {
         <div className="brand">
           <Box className="logo" />
 
-          <span className="name">Roomify</span>
+          <span className="name"><a href="/">Roomify</a></span>
         </div>
         <Button variant="ghost" size="sm" onClick={handleBack} className="exit">
           <X className="icon" /> Exit Editor
@@ -149,7 +165,12 @@ const visualizerId = () => {
               >
                 <Download className="w-4 h-4 mr-2" /> Export
               </Button>
-              <Button size="sm" onClick={() => {}} className="share">
+              <Button
+                size="sm"
+                onClick={handleShare}
+                className="share"
+                disabled={!currentImage}
+              >
                 <Share2 className="w-4 h-4 mr-2" /> Share
               </Button>
             </div>
@@ -201,14 +222,14 @@ const visualizerId = () => {
                 itemOne={
                   <ReactCompareSliderImage
                     src={project?.sourceImage}
-                    alt="Before"
+                    alt="before"
                     className="compare-img"
                   />
                 }
                 itemTwo={
                   <ReactCompareSliderImage
-                    src={currentImage || project?.renderedImage}
-                    alt="After"
+                    src={currentImage || project?.renderedImage || " "}
+                    alt="after"
                     className="compare-img"
                   />
                 }
