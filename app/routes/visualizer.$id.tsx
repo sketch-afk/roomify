@@ -35,7 +35,7 @@ const visualizerId = () => {
     // document.body.removeChild(link);
     window.open(currentImage, "_blank", "noopener,noreferrer");
   };
-  const handleShare = () => {
+  const handleShare = async () => {
     if (!currentImage) return;
 
     if (navigator.share) {
@@ -47,11 +47,15 @@ const visualizerId = () => {
         })
         .catch((error) => console.log("Error sharing", error));
     } else {
-      navigator.clipboard.writeText(window.location.href);
-      alert("Link copied to clipboard!");
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        alert("Link copied to clipboard!");
+      } catch (error) {
+        console.error("Failed to copy to clipboard:", error);
+        alert("Failed to copy link to clipboard.");
+      }
     }
   };
-
   const runGeneration = async (item: DesignItem) => {
     if (!id || !item.sourceImage) return;
 
@@ -140,7 +144,9 @@ const visualizerId = () => {
         <div className="brand">
           <Box className="logo" />
 
-          <span className="name"><a href="/">Roomify</a></span>
+          <span className="name">
+            <a href="/">Roomify</a>
+          </span>
         </div>
         <Button variant="ghost" size="sm" onClick={handleBack} className="exit">
           <X className="icon" /> Exit Editor
