@@ -3,7 +3,7 @@ import Navbar from "../../components/Navbar";
 import {ArrowRight, ArrowUpRight, Clock, Layers} from "lucide-react";
 import Button from "../../components/ui/Button";
 import Upload from "../../components/Upload";
-import {useNavigate} from "react-router";
+import {useNavigate, useParams} from "react-router";
 import {useEffect, useRef, useState} from "react";
 import {createProject, getProjects} from "../../lib/puter.action";
 
@@ -15,6 +15,7 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
+    const {id} = useParams();
     const navigate = useNavigate();
     const [projects, setProjects] = useState<DesignItem[]>([]);
     const isCreatingProjectRef = useRef(false);
@@ -76,7 +77,7 @@ export default function Home() {
                       <div className="pulse"></div>
                   </div>
 
-                  <p>Introducing Roomify 2.0</p>
+                  <p>Introducing Roomify</p>
               </div>
 
               <h1>Build beautiful spaces at the speed of thought with Roomify</h1>
@@ -141,7 +142,7 @@ export default function Home() {
                                       <div className="meta">
                                           <Clock size={12} />
                                           <span>{new Date(timestamp).toLocaleDateString()}</span>
-                                          <span>By JS Mastery</span>
+                                          <span>Made By {id}</span>
                                       </div>
                                   </div>
                                   <div className="arrow">
