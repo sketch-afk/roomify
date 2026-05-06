@@ -1,18 +1,15 @@
-# Welcome to React Router!
+# Roomify - AI-Powered Architectural Visualizer
 
-A modern, production-ready template for building full-stack React applications using React Router.
-
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+Roomify is an AI-first design environment that helps you visualize, render, and ship architectural projects faster than
+ever. It converts 2D floor plans into photorealistic 3D top-down architectural renders using AI.
 
 ## Features
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for  styling
-- 📖 [React Router docs](https://reactrouter.com/)
+- 🚀 **AI 3D Rendering**: Convert 2D floor plans into photorealistic 3D visualizations.
+- ☁️ **Cloud Storage**: Save and manage your projects securely using Puter's KV storage.
+- ⚡ **Real-time Visualization**: Fast processing and high-quality image generation.
+- 📦 **Modern Stack**: Built with React Router 7, TailwindCSS, and Puter.js.
+- 🔒 **Authentication**: Secure user authentication powered by Puter.
 
 ## Getting Started
 
@@ -26,21 +23,28 @@ npm install
 
 ### Environment Variables
 
-Create a `.env.local` file in the root directory and set the following variable:
+Create a `.env` or `.env.local` file in the root directory and set the following variable:
 
 ```bash
-VITE_PUTER_WORKER_URL=your_worker_url_here
+VITE_PUTER_WORKER_URL=your_puter_worker_url_here
 ```
 
 ### Development
 
-Start the development server with HMR:
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
 Your application will be available at `http://localhost:5173`.
+
+## Architecture
+
+- **Frontend**: React Router 7 with TailwindCSS.
+- **Backend/AI**: Powered by [Puter.js](https://puter.com/) for AI image generation (Gemini models) and serverless
+  worker hosting.
+- **Storage**: Puter KV storage for project metadata and image hosting.
 
 ## Building for Production
 
@@ -52,45 +56,14 @@ npm run build
 
 ## Deployment
 
-### Docker Deployment
+This project is designed to be deployed on **Puter**.
 
-To build and run using Docker:
+1. Build the project: `npm run build`
+2. Deploy the `build/client` directory to Puter Hosting.
+3. Deploy the `lib/puter.worker.js` as a Puter Worker.
 
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting
-experience. You can use whatever CSS framework you prefer.
+Alternatively, you can use the provided `Dockerfile` for containerized deployment.
 
 ---
 
-Built with ❤️ using React Router.
+Built with ❤️ using React Router and Puter.
