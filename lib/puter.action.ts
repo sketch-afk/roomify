@@ -14,6 +14,7 @@ export const getCurrentUser = async () => {
   try {
     return await puter.auth.getUser();
   } catch {
+    console.log("Failed to get current user");
     return null;
   }
 };
