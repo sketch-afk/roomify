@@ -1,11 +1,11 @@
 import type { Route } from "./+types/home";
 import Navbar from "../../components/Navbar";
-import { ArrowRight, ArrowUpRight, Clock, Layers } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Clock, Layers, Trash2 } from "lucide-react";
 import Button from "../../components/ui/Button";
 import Upload from "../../components/Upload";
 import { useNavigate, useOutletContext } from "react-router";
 import { useEffect, useRef, useState } from "react";
-import { createProject, getProjects } from "../../lib/puter.action";
+import { createProject, deleteProject, getProjects } from "../../lib/puter.action";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -70,6 +70,18 @@ export default function Home() {
 
     fetchProjects();
   }, []);
+
+  const handleDeleteProject = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    if (!confirm("Are you sure you want to delete this project?")) return;
+
+    const success = await deleteProject({ id });
+    if (success) {
+      setProjects((prev) => prev.filter((p) => p.id !== id));
+    } else {
+      alert("Failed to delete project. Please try again.");
+    }
+  };
 
   return (
     <div className="home">
@@ -143,8 +155,17 @@ export default function Home() {
                     <img src={renderedImage || sourceImage} alt="Project" />
 
                     <div className="badge">
-                      <span>By JS Mastery</span>{" "}
+                      <span>By {userName}</span>{" "}
                     </div>
+
+                    <button
+                      type="button"
+                      className="absolute top-2 right-2 p-1.5 rounded-full bg-black/60 hover:bg-red-600 text-white transition-colors z-20"
+                      title="Delete project"
+                      onClick={(e) => handleDeleteProject(e, id)}
+                    >
+                      <Trash2 size={16} />
+                    </button>
                   </div>
 
                   <div className="card-body">

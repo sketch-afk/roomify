@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router";
 import { generate3DView } from "../../lib/ai.action";
-import { Box, Download, RefreshCcw, Share2, X } from "lucide-react";
+import { Box, Download, RefreshCcw, Share2, Trash2, X } from "lucide-react";
 import Button from "../../components/ui/Button";
-import { createProject, getProjectById } from "../../lib/puter.action";
+import { createProject, deleteProject, getProjectById } from "../../lib/puter.action";
 import {
   ReactCompareSlider,
   ReactCompareSliderImage,
@@ -12,7 +12,7 @@ import {
 const visualizerId = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { userId } = useOutletContext<AuthContext>();
+  const { userId, userName } = useOutletContext<AuthContext>();
 
   const hasInitialGenerated = useRef(false);
 
@@ -23,6 +23,18 @@ const visualizerId = () => {
   const [currentImage, setCurrentImage] = useState<string | null>(null);
 
   const handleBack = () => navigate("/");
+
+  const handleDelete = async () => {
+    if (!id) return;
+    if (!confirm("Are you sure you want to delete this project?")) return;
+
+    const success = await deleteProject({ id });
+    if (success) {
+      navigate("/");
+    } else {
+      alert("Failed to delete project. Please try again.");
+    }
+  };
 
   const handleExport = () => {
     if (!currentImage) return;
@@ -103,14 +115,20 @@ const visualizerId = () => {
 
       setIsProjectLoading(true);
 
-      const fetchedProject = await getProjectById({ id });
+      const cachedProject = await getProjectById({ id });
 
-      if (!isMounted) return;
+      if (isMounted) {
+        if (cachedProject) {
+          setProject(cachedProject);
 
-      setProject(fetchedProject);
-      setCurrentImage(fetchedProject?.renderedImage || null);
-      setIsProjectLoading(false);
-      hasInitialGenerated.current = false;
+          if (cachedProject.renderedImage) {
+            setCurrentImage(cachedProject.renderedImage);
+            hasInitialGenerated.current = true;
+          }
+        }
+
+        setIsProjectLoading(false);
+      }
     };
 
     loadProject();
@@ -159,10 +177,18 @@ const visualizerId = () => {
             <div className="panel-meta">
               <p>Project</p>
               <h2>{project?.name || `Residence ${id}`}</h2>
-              <p className="note">Created by You</p>
+              <p className="note">Created by {userName}</p>
             </div>
 
             <div className="panel-actions">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleDelete}
+                className="hover:bg-red-600 hover:text-white"
+              >
+                <Trash2 className="w-4 h-4 mr-2" /> Delete
+              </Button>
               <Button
                 size="sm"
                 onClick={handleExport}
